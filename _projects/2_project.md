@@ -1,81 +1,79 @@
 ---
 layout: page
-title: project 2
-description: a project with a background image and giscus comments
-img: assets/img/3.jpg
+title: ENIGMA Logic Locking Framework
+description: Automated hardware IP protection through logic obfuscation
+img: assets/img/hardware_security.jpg
 importance: 2
 category: work
-giscus_comments: true
+related_publications: true
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+During my internship at the IC Design Lab, I led the development of ENIGMA, a Python framework designed to automatically insert logic-locking defenses into hardware designs. This project addresses one of the semiconductor industry's most pressing concerns: protecting intellectual property from unauthorized use and reverse engineering.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+## The Hardware Security Challenge
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+Modern integrated circuits represent significant investments in design time and intellectual property. However, the globalized semiconductor supply chain introduces vulnerabilities where designs can be stolen, overproduced, or reverse-engineered. Logic locking emerged as a promising countermeasure by inserting additional logic that renders a chip non-functional without the correct key.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/unlocked_circuit.jpg" title="Original circuit" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/locked_circuit.jpg" title="Logic-locked circuit" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
+    Comparison of an original circuit design (left) and the same circuit after logic-locking insertion (right), showing additional key-controlled gates that obfuscate functionality.
 </div>
+
+## Framework Architecture
+
+ENIGMA automates the complex process of inserting logic-locking mechanisms into hardware designs. The framework accepts synthesized netlists and applies various locking algorithms, inserting key gates at strategic locations throughout the circuit. The system is highly parametrized, supporting key sizes ranging from 64 to 256 bits depending on the desired security level.
+
+One of ENIGMA's key innovations is its flexibility with user-defined cell libraries. This allows designers to work with different process technologies and vendor-specific components while maintaining compatibility across various design flows.
+
+## Performance Analysis and Optimization
+
+A critical aspect of any security feature is its overhead cost. Through ENIGMA, I conducted extensive analysis on the impact of logic obfuscation on three key metrics: chip area, propagation delay, and power consumption.
+
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/area_overhead.jpg" title="Area overhead analysis" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    This image can also have a caption. It's like magic.
+    Analysis of area overhead across different key sizes and locking strategies, demonstrating the trade-off between security strength and resource costs.
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+Working with proprietary RISC-V processor designs, I optimized the locking algorithms to achieve less than 3% area overhead while maintaining strong security properties. This low overhead makes the technology practical for commercial deployment, where cost constraints are paramount.
 
 <div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/delay_analysis.jpg" title="Timing impact" class="img-fluid rounded z-depth-1" %}
     </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/power_analysis.jpg" title="Power consumption" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+    Timing and power analysis showing minimal impact on circuit performance, crucial for maintaining competitive specifications.
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+## Parametrized Key Insertion
 
-{% raw %}
+The framework's parametrized approach allows designers to balance security requirements against overhead constraints. Key insertion points are selected using intelligent algorithms that consider both security effectiveness and implementation cost. The system supports various locking techniques including:
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
+- Random logic locking for baseline protection
+- Fault analysis-resistant locking for enhanced security
+- Strong logic locking against SAT-based attacks
+- Hybrid approaches combining multiple techniques
 
-{% endraw %}
+## Real-World Validation
+
+Testing on proprietary RISC-V designs validated ENIGMA's practical applicability. The framework successfully processed complex processor architectures while maintaining the functional correctness of the original design. The sub-3% overhead demonstrated that robust security could be achieved without significantly impacting commercial viability.
+
+This work contributes to making hardware IP protection accessible to design houses of all sizes, not just large corporations with dedicated security teams. The automated nature of ENIGMA significantly reduces the expertise and time required to implement effective logic locking.
+
+**Duration:** June 2022 - September 2022  
+**Institution:** National University of Sciences & Technology, Pakistan  
+**Lab:** IC Design Lab

@@ -1,80 +1,122 @@
 ---
 layout: page
-title: project 4
-description: another without an image
-img:
-importance: 3
+title: 2D CNC Machine (Drawbot)
+description: G-code controlled drawing robot with motion planning algorithms
+img: assets/img/drawbot.jpg
+importance: 6
 category: fun
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+This project brings digital designs into the physical world through a custom-built CNC drawing machine. By implementing G-code parsing and motion control algorithms from scratch, the system translates vector graphics into precise mechanical movements, demonstrating the fundamentals of computer-controlled manufacturing.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+## System Architecture
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+The drawbot consists of three main subsystems working in coordination:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/mechanical_assembly.jpg" title="mechanical assembly" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/stepper_control.jpg" title="stepper motor control" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/control_board.jpg" title="control electronics" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    Left: XY gantry mechanical assembly with belt-driven stages. Center: Stepper motors providing precise positioning. Right: Arduino-based control board coordinating motion.
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+**Mechanical**: XY gantry system using timing belts and linear rails for smooth, accurate motion. A servo-controlled pen lift mechanism enables drawing and positioning moves.
+
+**Electrical**: Stepper motor drivers providing the current and control signals needed to drive NEMA 17 motors. An Arduino microcontroller orchestrates all motion.
+
+**Software**: Embedded C/C++ firmware parsing G-code commands and generating precisely timed step pulses.
+
+## G-Code Parsing
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid loading="eager" path="assets/img/gcode_example.jpg" title="G-code commands" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    G-code command structure showing movement commands, pen control, and coordinate transformations.
+</div>
+
+The firmware implements a G-code interpreter supporting standard commands:
+
+- **G00/G01**: Rapid positioning and linear interpolation moves
+- **G02/G03**: Circular interpolation (clockwise and counterclockwise arcs)
+- **M03/M05**: Pen up and pen down commands
+- **G90/G91**: Absolute and relative positioning modes
+
+The parser extracts parameters from each command and validates them before execution, ensuring safe operation and catching malformed input.
+
+## Motion Planning and Control
+
+Translating high-level G-code commands into stepper motor movements requires sophisticated motion planning:
+
+**Bresenham Line Algorithm**: For straight-line moves, this algorithm determines which steps to take on each axis, ensuring the mechanical path closely approximates the desired line while using only integer arithmetic.
+
+**Acceleration Profiles**: Rather than instantly jumping to target speeds (which would cause missed steps and vibration), the system implements trapezoidal velocity profiles. Moves begin with gradual acceleration, proceed at constant velocity, then decelerate smoothly to the endpoint.
+
+**Step Synchronization**: When both axes must move simultaneously (diagonal lines), the firmware precisely times step pulses to maintain the correct ratio of X to Y movement throughout the motion.
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/motion_profile.jpg" title="velocity profile" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+    Trapezoidal velocity profile showing acceleration, constant velocity, and deceleration phases for smooth motion.
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+## Timing and Precision
 
-{% raw %}
+Achieving precise drawings requires careful attention to timing:
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
+**Stepper Resolution**: With 200 steps per revolution and 16x microstepping, motors provide 3,200 steps per revolution. Combined with timing belt mechanics, this yields positioning resolution of approximately 0.012mm.
+
+**Interrupt-Driven Stepping**: Timer interrupts generate step pulses with microsecond precision, independent of other processing tasks. This ensures consistent motion even while parsing the next G-code command.
+
+**Backlash Compensation**: Software compensation adjusts for mechanical backlash in the drive system, ensuring accuracy when changing direction.
+
+## Python Toolchain
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid loading="eager" path="assets/img/svg_to_gcode.jpg" title="conversion pipeline" class="img-fluid rounded z-depth-1" %}
+    </div>
 </div>
-```
+<div class="caption">
+    Python toolchain converting SVG vector graphics into machine-ready G-code with path optimization.
+</div>
 
-{% endraw %}
+A Python toolchain bridges the gap between design software and machine control:
+
+- **SVG Parsing**: Extracts vector paths from standard SVG files
+- **Path Optimization**: Reorders paths to minimize pen-up travel time  
+- **G-Code Generation**: Converts optimized paths into G-code with appropriate speeds and pen control
+- **Simulation**: Visualizes the drawing path before sending to hardware
+
+## Example Outputs
+
+The drawbot successfully renders complex drawings including:
+
+- Technical diagrams and CAD designs
+- Typography and calligraphy
+- Artistic illustrations with intricate detail
+- PCB silkscreen patterns for electronics fabrication
+
+Drawing accuracy of ±0.1mm is achieved consistently across the 300mm × 300mm work area.
+
+## Technical Stack
+
+- **C/C++**: Real-time motion control firmware for Arduino
+- **Python**: G-code generation and path planning tools
+- **Stepper Motor Control**: Timer interrupts and acceleration algorithms
+- **Serial Communication**: Command streaming from PC to controller
+
+This project demonstrates that CNC fundamentals—from motion planning to real-time control—can be mastered through hands-on implementation, providing insights applicable to industrial CNC machines, 3D printers, and other computer-controlled motion systems.

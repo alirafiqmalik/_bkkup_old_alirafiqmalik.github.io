@@ -1,80 +1,130 @@
 ---
 layout: page
-title: project 5
-description: a project with a background image
-img: assets/img/1.jpg
-importance: 3
+title: Web-Browsing Task Agent with Memory
+description: A tiny AI agent that browses the web, remembers what it learns, and self-checks answers with a lightweight formal model.
+img: assets/img/12.jpg
+importance: 1
 category: fun
+related_publications: true
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+A lightweight, resume-ready **AI agent** that takes a natural-language goal, **browses** for answers, **remembers** prior results, supports **follow-ups**, and **checks** its final output against a small formal model.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+---
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+## Why this project
+
+- **Interview-ready:** Demonstrates an agent loop (observe → plan → act → reflect/memory).
+- **Practical:** LLM + search/scrape + persistence (SQLite/JSON).
+- **Trust layer:** A tiny **checker** catches common failure modes (e.g., hallucinated citations, illegal phase jumps).
+
+---
+
+## Features
+
+- Natural-language goals (e.g., “Find the latest average gas price in Newark, NJ”).
+- Browser/search tool via `requests + BeautifulSoup` or a search API.
+- **Memory** of prior queries and results for follow-ups.
+- Answer synthesis with **citations** (titles + URLs).
+- **Formal-checker gate** before returning answers.
+- Lightweight stack; finishable in **2–3 hours**.
 
 <div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="Agent loop" class="img-fluid rounded z-depth-1" %}
+  </div>
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="Memory (SQLite)" class="img-fluid rounded z-depth-1" %}
+  </div>
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="Web results & citations" class="img-fluid rounded z-depth-1" %}
+  </div>
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+<div class="caption">
+  Left: the observe → plan → act → reflect loop. Middle: a simple SQLite store for session memory. Right: parsed web results with citations.
+</div>
+
+You can also mix regular text between image rows, even citations {% cite einstein1950meaning %}.  
+Below is the **architecture sketch** and a **checker stub** you can adapt.
+
+```text
+┌─────────┐     ┌─────────┐     ┌─────────┐     ┌──────────────┐
+│ Observe │ ─→  │  Plan   │ ─→  │  Act    │ ─→  │ Reflect/Save │
+└────┬────┘     └────┬────┘     └────┬────┘     └──────┬───────┘
+     │               │               │                 │
+     │               │               │                 │
+     │          LLM (optional)  Search/Scrape    Memory (SQLite/JSON)
+     │                                              ▲
+     └─────────────────────────────── Answer ←──────┘
+```
+
+```python
+def check_finish(answer, observations, transitions):
+    assert observations, "Finish without observations"
+    cited = extract_urls(answer)
+    observed = {o.url for o in observations}
+    assert cited.issubset(observed), "Cited URL not observed"
+    assert is_valid_transition_sequence(transitions), "Illegal phase jump"
+```
+<div class="row">
+  <div class="col-sm mt-3 mt-md-0">
+    {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="CLI run: query" class="img-fluid rounded z-depth-1" %}
+  </div>
+</div>
+
+<div class="caption">
+  A simple CLI plans, fetches 3–5 sources, extracts numbers/dates, and synthesizes a short answer with 2+ citations.
+</div>
+
+### Getting started
+
+```bash
+git clone https://github.com/you/web-browsing-agent-memory
+cd web-browsing-agent-memory
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+```yaml
+# config.yaml
+search:
+  provider: serper   # or serpapi, scrape
+  api_key: ${SEARCH_API_KEY}
+llm:
+  provider: openai   # optional
+  model: gpt-4o-mini
+  api_key: ${OPENAI_API_KEY}
+memory:
+  backend: sqlite
+  path: data/agent.sqlite
+```
 
 <div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+  <div class="col-sm-8 mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/6.jpg" title="2/3: Architecture diagram" class="img-fluid rounded z-depth-1" %}
+  </div>
+  <div class="col-sm-4 mt-3 mt-md-0">
+    {% include figure.liquid path="assets/img/11.jpg" title="1/3: Tests passing" class="img-fluid rounded z-depth-1" %}
+  </div>
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+<div class="caption">
+  The 2/3 panel highlights the overall architecture; the 1/3 panel shows minimal tests keeping the checker honest.
+</div>
+
+The code is simple: wrap screenshots with `<div class="col-sm">` inside a `<div class="row">` (see the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a>).  
+Make images responsive with `img-fluid`; add `rounded z-depth-1` for polish.
 
 {% raw %}
-
 ```html
 <div class="row justify-content-sm-center">
   <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/6.jpg" title="2/3: Architecture diagram" class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid path="assets/img/11.jpg" title="1/3: Tests passing" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 ```
-
 {% endraw %}

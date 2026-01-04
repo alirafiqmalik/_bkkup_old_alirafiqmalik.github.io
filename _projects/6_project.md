@@ -1,80 +1,98 @@
 ---
 layout: page
-title: project 6
-description: a project with no image
-img:
-importance: 4
+title: FPGA Real-Time Circle Renderer
+description: Hardware-accelerated graphics using Bresenham's Circle Algorithm
+img: assets/img/fpga_circles.jpg
+importance: 5
 category: fun
+# hardware
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+This project implements hardware-accelerated graphics rendering on an FPGA, demonstrating how geometric algorithms can be translated into parallel digital logic for real-time visual effects. By implementing Bresenham's Circle Algorithm directly in Verilog, the system achieves smooth animation without any software overhead.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+## Bresenham's Circle Algorithm in Hardware
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+Bresenham's algorithm is traditionally a software technique for efficient circle rendering using only integer arithmetic. This project reimagines the algorithm as a hardware state machine, where each clock cycle advances the circle drawing process.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/bresenham_algorithm.jpg" title="algorithm visualization" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/hardware_pipeline.jpg" title="hardware pipeline" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    Left: Bresenham's Circle Algorithm determining pixel positions using integer arithmetic. Right: Hardware pipeline architecture for parallel pixel generation.
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+The hardware implementation exploits the eight-way symmetry of circles, calculating only one octant and mirroring pixels to the other seven octants simultaneously. This parallelism reduces the time to draw a complete circle by a factor of eight compared to a sequential implementation.
+
+## VGA Driver Integration
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid loading="eager" path="assets/img/vga_timing.jpg" title="VGA timing diagram" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    VGA timing signals showing horizontal and vertical sync pulses coordinating with pixel data transmission.
+</div>
+
+The circle renderer connects to a custom VGA driver module that handles the precise timing requirements of analog VGA displays. The driver generates:
+
+- Horizontal sync pulses at 31.5 kHz
+- Vertical sync pulses at 60 Hz
+- Pixel clock signals at 25.175 MHz
+- RGB color signals for each pixel
+
+The circle renderer writes pixel data to a framebuffer, which the VGA driver continuously scans to generate the display output. This architecture decouples rendering logic from display timing, allowing complex graphics operations without disrupting the VGA signal.
+
+## Real-Time Animation
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/animation_sequence.jpg" title="animation frames" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+    Sequence of animation frames showing smooth geometric transformations achieved through hardware-level rendering.
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+The system achieves smooth real-time animation by continuously updating circle parameters—position, radius, color—and re-rendering at display refresh rates. Animation techniques include:
 
-{% raw %}
+- **Position interpolation**: Circles move smoothly across the screen
+- **Radius animation**: Circles grow and shrink organically  
+- **Color transitions**: Smooth color gradients and pulsing effects
+- **Multiple simultaneous circles**: Parallel rendering of independent geometric objects
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
+All animation logic runs in parallel hardware, maintaining consistent 60 FPS performance regardless of scene complexity within resource constraints.
 
-{% endraw %}
+## Resource Efficiency
+
+FPGA resources are precious, and this design demonstrates efficient utilization:
+
+**Logic Elements**: The circle renderer uses minimal combinational logic by leveraging Bresenham's integer-only arithmetic. No floating-point operations or expensive division operations are required.
+
+**Memory**: A dual-port RAM framebuffer enables simultaneous rendering (write) and display (read) operations. The memory size scales with display resolution—a 640×480 display with 8-bit color requires less than 5 Mbit.
+
+**Clock Speed**: The design operates comfortably within typical FPGA clock speeds, with the most demanding timing path being pixel data routing to the VGA output pins.
+
+## Implementation Details
+
+- **Verilog HDL**: Complete system description including circle renderer, VGA driver, and framebuffer management
+- **Modular Architecture**: Separate modules for each functional block enable easy modification and reuse
+- **Parameterizable Design**: Circle count, screen resolution, and color depth are configurable parameters
+- **FPGA Platform**: Designed for common development boards (DE1-SoC, Basys3, etc.)
+
+## Applications
+
+This project's techniques extend beyond simple circle rendering:
+
+- Graphics accelerators for embedded displays
+- Real-time data visualization (oscilloscopes, spectrum analyzers)
+- Video game graphics engines
+- Scientific visualization on FPGA-based systems
+- UI rendering for FPGA soft processors
+
+The project proves that with careful algorithm selection and hardware design, FPGAs can deliver impressive graphics performance with minimal resource consumption—no GPU required.

@@ -1,81 +1,62 @@
 ---
 layout: page
-title: project 1
-description: a project with a background image
-img: assets/img/12.jpg
+title: Multi-Agent Aerial Swarm Coordination
+description: Event-driven coordination protocol for autonomous drone swarms
+img: assets/img/drone_swarm.jpg
 importance: 1
 category: work
 related_publications: true
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+As an Undergraduate Research Assistant at the Communication Systems and Networks Lab, I collaborated on developing cutting-edge coordination protocols for multi-agent aerial swarms. This project focused on enabling autonomous drones to work together seamlessly in complex formations and dynamic environments.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+## System Architecture
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+The core of this project involved implementing an event-driven coordination protocol on Raspberry Pi companion computers integrated with Pixhawk/ArduPilot flight controllers. This architecture provided the computational power needed for real-time decision-making while maintaining the reliability of proven flight control systems.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/swarm_flock.jpg" title="Flock formation" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/swarm_line.jpg" title="Line formation" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/swarm_helical.jpg" title="Helical formation" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    Three primary formation types implemented: flock formation for coordinated group movement, line formation for sequential operations, and helical formation for complex aerial maneuvers.
 </div>
 
-You can also put regular text between your rows of images, even citations {% cite einstein1950meaning %}.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+## Formation Control Design
+
+I designed and optimized leader-follower formation control algorithms supporting three distinct formation types: flock, line, and helical configurations. A key achievement was enabling dynamic reconfiguration between formations with under 2 minutes of switching latency, allowing the swarm to adapt to changing mission requirements in near real-time.
+
+The formation control system utilized distributed consensus algorithms where follower agents maintained relative positions to the leader while accounting for inter-agent collision avoidance. Each formation type was parameterized to allow for scalable swarm sizes and adjustable spacing constraints.
+
+## Fault-Tolerant Communication Stack
+
+One of the most challenging aspects was engineering a robust mesh networking stack to ensure reliable communication between agents. The system leveraged IEEE 802.11 for wireless connectivity, implementing both UDP for time-critical control messages and TCP for reliable data transfer. Integration with the MAVLink protocol enabled standardized communication with the flight controllers.
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/network_topology.jpg" title="Mesh network topology" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/latency_graph.jpg" title="Communication latency" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+    The mesh networking architecture (left) ensured redundant communication paths, while latency measurements (right) confirmed real-time performance under 100ms.
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+The fault-tolerant design included automatic route discovery and healing mechanisms, ensuring that the loss of individual communication links wouldn't compromise the entire swarm's coordination. Through careful optimization, we achieved communication latencies under 100ms, critical for maintaining stable formation control.
 
-{% raw %}
+## Impact and Applications
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
+This research has applications in disaster response, agricultural monitoring, search and rescue operations, and coordinated surveillance. The event-driven architecture ensures efficient resource utilization while the dynamic reconfiguration capability allows swarms to adapt to evolving mission parameters without returning to base.
 
-{% endraw %}
+**Duration:** September 2022 - July 2023  
+**Institution:** National University of Sciences & Technology, Pakistan  
+**Lab:** Communication Systems and Networks Lab

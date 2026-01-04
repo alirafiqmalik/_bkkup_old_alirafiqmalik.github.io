@@ -2,9 +2,9 @@
 layout: page
 title: projects
 permalink: /projects/
-description: A collection of cool projects to be added soon!
+description: A collection of some of my projects. You can find more of my work on <a href='https://github.com/alirafiqmalik'> GitHub</a>.
 nav: false
-nav_order: 1
+nav_order: 2
 display_categories: [work, fun]
 horizontal: false
 ---
@@ -26,14 +26,16 @@ horizontal: false
   <div class="container">
     <div class="row row-cols-2">
     {% for project in sorted_projects %}
-      {% include projects_horizontal.liquid %}
+      {% assign capitalized_name = project.name | capitalize %}
+      {% include projects_horizontal.liquid project_name=capitalized_name %}
     {% endfor %}
     </div>
   </div>
   {% else %}
   <div class="grid">
     {% for project in sorted_projects %}
-      {% include projects.liquid %}
+      {% assign capitalized_name = project.name | capitalize %}
+      {% include projects.liquid project_name=capitalized_name %}
     {% endfor %}
   </div>
   {% endif %}
@@ -50,14 +52,14 @@ horizontal: false
   <div class="container">
     <div class="row row-cols-2">
     {% for project in sorted_projects %}
-      {% include projects_horizontal.liquid %}
+      {% include projects_horizontal.liquid project_name=project.name %}
     {% endfor %}
     </div>
   </div>
   {% else %}
   <div class="grid">
     {% for project in sorted_projects %}
-      {% include projects.liquid %}
+      {% include projects.liquid project_name=project.name %}
     {% endfor %}
   </div>
   {% endif %}
