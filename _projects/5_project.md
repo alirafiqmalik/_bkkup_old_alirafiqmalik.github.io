@@ -67,6 +67,7 @@ def check_finish(answer, observations, transitions):
     assert cited.issubset(observed), "Cited URL not observed"
     assert is_valid_transition_sequence(transitions), "Illegal phase jump"
 ```
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="CLI run: query" class="img-fluid rounded z-depth-1" %}
@@ -89,10 +90,10 @@ pip install -r requirements.txt
 ```yaml
 # config.yaml
 search:
-  provider: serper   # or serpapi, scrape
+  provider: serper # or serpapi, scrape
   api_key: ${SEARCH_API_KEY}
 llm:
-  provider: openai   # optional
+  provider: openai # optional
   model: gpt-4o-mini
   api_key: ${OPENAI_API_KEY}
 memory:
@@ -117,6 +118,7 @@ The code is simple: wrap screenshots with `<div class="col-sm">` inside a `<div 
 Make images responsive with `img-fluid`; add `rounded z-depth-1` for polish.
 
 {% raw %}
+
 ```html
 <div class="row justify-content-sm-center">
   <div class="col-sm-8 mt-3 mt-md-0">
@@ -127,4 +129,5 @@ Make images responsive with `img-fluid`; add `rounded z-depth-1` for polish.
   </div>
 </div>
 ```
+
 {% endraw %}

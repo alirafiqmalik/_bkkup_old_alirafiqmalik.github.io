@@ -4,7 +4,7 @@ title: SDN-Based Machine Learning IDS
 description: Intrusion Detection System for Software-Defined Networks using ML/DL models
 img: assets/img/sdn_ids.jpg
 importance: 1
-category: fun 
+category: fun
 # security
 ---
 

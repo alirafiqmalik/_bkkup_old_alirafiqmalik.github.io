@@ -62,7 +62,7 @@ The circle renderer writes pixel data to a framebuffer, which the VGA driver con
 The system achieves smooth real-time animation by continuously updating circle parameters—position, radius, color—and re-rendering at display refresh rates. Animation techniques include:
 
 - **Position interpolation**: Circles move smoothly across the screen
-- **Radius animation**: Circles grow and shrink organically  
+- **Radius animation**: Circles grow and shrink organically
 - **Color transitions**: Smooth color gradients and pulsing effects
 - **Multiple simultaneous circles**: Parallel rendering of independent geometric objects
 

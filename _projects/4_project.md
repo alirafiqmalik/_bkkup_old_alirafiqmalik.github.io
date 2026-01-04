@@ -97,7 +97,7 @@ Achieving precise drawings requires careful attention to timing:
 A Python toolchain bridges the gap between design software and machine control:
 
 - **SVG Parsing**: Extracts vector paths from standard SVG files
-- **Path Optimization**: Reorders paths to minimize pen-up travel time  
+- **Path Optimization**: Reorders paths to minimize pen-up travel time
 - **G-Code Generation**: Converts optimized paths into G-code with appropriate speeds and pen control
 - **Simulation**: Visualizes the drawing path before sending to hardware
 

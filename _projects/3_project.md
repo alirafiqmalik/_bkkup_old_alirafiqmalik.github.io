@@ -34,6 +34,7 @@ Legal documents present unique challenges for machine learning systems. They con
 I developed a comprehensive Python pipeline that automated the extraction, structuring, and preprocessing of data from raw court documents. This pipeline handled various document formats and structures, identifying key elements such as case facts, legal arguments, precedents cited, and judicial reasoning.
 
 The preprocessing stage involved several sophisticated steps:
+
 - Document parsing and segmentation
 - Named entity recognition for parties, judges, and legal entities
 - Citation extraction and linking
@@ -56,6 +57,7 @@ This automation was crucial for scaling the analysis to thousands of cases, tran
 The core predictive system utilized Transformer-based NLP models implemented in both TensorFlow and PyTorch. These models leverage attention mechanisms to capture long-range dependencies in legal text, essential for understanding how different parts of a case relate to the final judgment.
 
 I fine-tuned pre-trained language models on the custom legal case dataset, adapting general-purpose language understanding to the specific domain of legal reasoning. The fine-tuning process involved:
+
 - Domain adaptation through continued pre-training on legal corpora
 - Task-specific training on labeled case outcomes
 - Hyperparameter optimization for legal text characteristics
@@ -90,6 +92,7 @@ The fine-tuned models achieved 83% accuracy on the custom legal case dataset, a 
 </div>
 
 The improved generalization came from careful attention to:
+
 - Balanced representation of different case types in training data
 - Cross-validation across temporal splits to test future prediction capability
 - Analysis of prediction confidence to identify cases requiring human review
@@ -98,6 +101,7 @@ The improved generalization came from careful attention to:
 ## Impact and Applications
 
 This work demonstrates the potential for AI-assisted legal analysis, where machine learning systems can help legal professionals quickly assess case strength and likely outcomes. Such tools can:
+
 - Prioritize cases for limited legal resources
 - Assist in settlement negotiations with data-driven outcome predictions
 - Identify relevant precedents more efficiently
