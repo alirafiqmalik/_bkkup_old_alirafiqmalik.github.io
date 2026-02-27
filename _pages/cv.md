@@ -4,7 +4,7 @@ permalink: /cv/
 title: cv
 nav: true
 nav_order: 4
-cv_pdf: myResume.pdf
+cv_pdf: AliMalik_Resume.pdf
 description:
 toc:
   sidebar: left
